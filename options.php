@@ -70,8 +70,8 @@ function tweet_options_validate( $input ) {
 	$input['ats'] = wp_filter_nohtml_kses( $input['ats'] );
 	$input['cache_exp'] = wp_filter_nohtml_kses( $input['cache_exp'] );
 
-	if ( ! isset( $input['cache'] ) )
-		$input['cache'] = null;
-		$input['cache'] = ( $input['cache'] == 1 ? 1 : 0 );
+	if ( ! isset( $input['caching'] ) )
+		$input['caching'] = null;
+		$input['caching'] = ( $input['caching'] == 1 ? 1 : 0 );
 	return $input;
 }
