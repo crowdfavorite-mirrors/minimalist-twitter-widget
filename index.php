@@ -1,6 +1,7 @@
 <?php
 /* Plugin Name: Minimalist Twitter Widget
 Plugin URI: http://impression11.co.uk/
+Description: A minimalist Twitter widget to display users tweets.
 Version: 1.0
 Author: Impression11 Ltd
 Author URI: http://impression11.co.uk/
