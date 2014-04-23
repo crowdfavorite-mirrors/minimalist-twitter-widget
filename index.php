@@ -1,7 +1,7 @@
 <?php
 /* Plugin Name: Minimalist Twitter Widget
 Plugin URI: http://impression11.co.uk/
-Version: 1.1
+Version: 1.2
 Description: A minimalist Twitter widget to display tweets.
 Author: Impression11 Ltd
 Author URI: http://impression11.co.uk/
@@ -13,9 +13,11 @@ function mintweet($atts)
 { 
 
  extract( shortcode_atts( array(
-	      'username' => 'impression11',
-	      'count' => '5',
-	      'type' => 'User'
+	      'username' => 'ethanjim',
+	      'count' => 5,
+	      'type' => 'user',
+	      'retweets' => 1,
+	      'replies' => 1
      ), $atts ) );
 
 
@@ -38,7 +40,7 @@ $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCE
 // Check if we're getting user tweets or hashtag tweets
 if ($type=='user'){
 // get user tweets
-$statuses = $connection->get('statuses/user_timeline', array('screen_name' => $username, 'count' => $count));}
+$statuses = $connection->get('statuses/user_timeline', array('screen_name' => $username, 'count' => $count, 'include_rts' => $retweets));}
 else
 {
 //get hastag tweets
@@ -46,7 +48,7 @@ $statuses = $connection->get('search/tweets', array("q" => '#'.$username, 'count
 //bring the array up one level so it's compatible with the loop for getting user tweets
 $statuses = $statuses->statuses;}
 $tweettest = count($statuses);
-if ($tweettest ==0){echo 'Please check your Twitter Application details, that you have specified the number of tweets to load.';} else {
+if ($tweettest == 0){echo 'Please check your Twitter Application details, that you have specified the number of tweets to load.';} else {
 $cache ='';
 $cache .= '<ul id="tweets">';
 foreach ($statuses as $status) {
@@ -59,6 +61,7 @@ $cache .= '</a>';
 $cache .= ': ';
 }
 $tweet = preg_replace('|([\w\d]*)\s?(https?://([\d\w\.-]+\.[\w\.]{2,6})[^\s\]\[\<\>]*/?)|i', '$1 <a href="$2">$2</a>', $status->text);
+
 $cache .=  $tweet;
 $cache .=  '</li>';
 }
@@ -84,7 +87,7 @@ class wp_tweets extends WP_Widget
   {
 echo $args['before_widget'];
 echo $args['before_title'].$instance['title'].$args['after_title'];
-echo do_shortcode('[mintweet type='.$instance['search'].' username='.$instance['username'].' count='.$instance['count'].']');
+echo do_shortcode('[mintweet type='.$instance['search'].' username='.$instance['username'].' count='.$instance['count'].' retweets="'.$instance['retweet'].'"]');
 echo $args['after_widget'];
 }
 
@@ -120,6 +123,19 @@ echo $args['after_widget'];
 <br />
 <input type="text" class="img" name="<?php echo $this->get_field_name('count'); ?>" id="<?php echo $this->get_field_id('count'); ?>" value="<?php echo $instance['count']; ?>" />
 </p>
+<p>
+  <label for="<?php echo $this->get_field_id('retweet'); ?>">
+    <?php _e( 'Display Retweets (User Tweets Only)' ); ?>
+  </label>
+  <select name="<?php echo $this->get_field_name('retweet'); ?>" id="<?php echo $this->get_field_id('retweet'); ?>" class="widefat">
+    <option value="1"<?php selected( $instance['retweet'], '1' ); ?>>
+    <?php _e('True'); ?>
+    </option>
+    <option value="0"<?php selected( $instance['retweet'], '0' ); ?>>
+    <?php _e('False'); ?>
+    </option>
+  </select>
+</p> 
 <?php
   }
 } 
