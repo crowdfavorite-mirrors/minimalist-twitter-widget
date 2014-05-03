@@ -1,7 +1,7 @@
 <?php
 /* Plugin Name: Minimalist Twitter Widget
 Plugin URI: http://impression11.co.uk/
-Version: 1.3
+Version: 1.4
 Description: A minimalist Twitter widget to display tweets.
 Author: Impression11 Ltd
 Author URI: http://impression11.co.uk/
@@ -114,25 +114,30 @@ function mintweet($atts)
 
 				$statuses = $statuses->statuses;
 			}
-
 			if (count($statuses) == 0 && !$options['caching'] == 1 || isset($statuses->error)) {
 				echo 'Please check your Twitter Application details, that you have specified the number of tweets to load, if you have ran out of API requests, or if your account is set to private';
 			}
 			else {
 				foreach($statuses as $status) {
-					$status->text = preg_replace('|([\w\d]*)\s?(https?://([\d\w\.-]+\.[\w\.]{2,6})[^\s\]\[\<\>]*/?)|i', '$1 <a href="$2" target="_blank">$2</a>', $status->text);
-					$status->text = preg_replace('/\B\@([a-zA-Z0-9_]{1,20})/', '<a href="https://twitter.com/#!/$1" target="_blank">$0</a>', $status->text);
-					$tweetarray[$status->id_str]['Tweet'] = $status->text;
 					if (isset($status->retweeted_status)) {
 						$tweetarray[$status->id_str]['Retweet'] = 1;
+						$status->retweeted_status->text = 'RT @'.$status->retweeted_status->user->screen_name.' '.$status->retweeted_status->text;
+						$status->retweeted_status->text = preg_replace('|([\w\d]*)\s?(https?://([\d\w\.-]+\.[\w\.]{2,6})[^\s\]\[\<\>]*/?)|i', '$1 <a href="$2" target="_blank">$2</a>', $status->retweeted_status->text);
+					$status->retweeted_status->text = preg_replace('/\B\@([a-zA-Z0-9_]{1,20})/', '<a href="https://twitter.com/#!/$1" target="_blank">$0</a>', $status->retweeted_status->text);
+					$status->retweeted_status->text = preg_replace('/(^|\s)#(\w*[a-zA-Z_]+\w*)/', '\1#<a href="http://twitter.com/search?q=%23\2">\2</a>', $status->retweeted_status->text);
+					$tweetarray[$status->id_str]['Tweet'] = $status->retweeted_status->text;
+
+					}
+					else{
+					$status->text = preg_replace('|([\w\d]*)\s?(https?://([\d\w\.-]+\.[\w\.]{2,6})[^\s\]\[\<\>]*/?)|i', '$1 <a href="$2" target="_blank">$2</a>', $status->text);
+					$status->text = preg_replace('/\B\@([a-zA-Z0-9_]{1,20})/', '<a href="https://twitter.com/#!/$1" target="_blank">$0</a>', $status->text);
+					$status->text = preg_replace('/(^|\s)#(\w*[a-zA-Z_]+\w*)/', '\1<a href="http://twitter.com/search?q=%23\2" target="_blank">#\2</a>', $status->text);
+
+					$tweetarray[$status->id_str]['Tweet'] = $status->text;
 					}
 
 					if (isset($status->in_reply_to_user_id)) {
 						$tweetarray[$status->id_str]['Reply'] = 1;
-					}
-
-					if ($type == 'hash') {
-						$tweetarray[$status->id_str]['User'] = $status->user->screen_name;
 					}
 
 					krsort($tweetarray);

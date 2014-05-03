@@ -3,7 +3,7 @@ Contributors: impression11
 Tags: Twitter, Widget, Minimalist, Tweets,
 Requires at least: 3.5
 Tested up to: 3.9
-Stable tag: 1.3
+Stable tag: 1.4
 
 A quick and efficient Twitter widget to display tweets.
 
@@ -22,6 +22,9 @@ With efficiency in mind this widget can also cache your Tweets reduce the amount
 
 Something not working? [Contact Me](http://impression11.co.uk/contact/)
 
+[View our other plugins](http://profiles.wordpress.org/impression11/)
+
+
 == Installation ==
 
 1. Extract the zip file and just drop the contents in the wp-content/plugins/ directory of your WordPress installation and then activate the Plugin from Plugins page.
@@ -33,6 +36,10 @@ Something not working? [Contact Me](http://impression11.co.uk/contact/)
 5. If you run into API limits use the caching feature to speed up loading and to limit the amount of requests sent to Twitter.
 
 == Changelog ==
+
+= 1.4 =
+* Improved displaying of Retweeted tweets in widget.
+* Linkified Hashtags in tweets.
 
 = 1.3 =
 * The option to decide if Replies and Retweets are shown.
